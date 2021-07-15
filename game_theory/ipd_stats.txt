@@ -1,4 +1,4 @@
-strat,num_games,num_years,min_years
-1,431,633,410
-2,1252,1301,98
-3,1537,1732,384
+strat,num_games,num_years,min_years,num_entropy
+1,0,0,0,0
+2,569,800,476,47
+3,1521,2256,1456,69

@@ -32,12 +32,13 @@ def main():
 
     placeStats(p1,p2)
 
+
 class Player:
     def __init__(self, playerNumber, n, e):
         self.playerNumber = playerNumber
         self.strat = getStrategy("Player " + str(playerNumber))
         self.randomArr = quantumrandom.get_data(array_length = n)
-        print(self.randomArr)
+        self.entropyArr = quantumrandom.get_data(array_length = n)
         self.entropy = e
         self.numGamesPlayed = 0
         self.lastChoicePlayed = -1
@@ -45,6 +46,7 @@ class Player:
         self.currentChoice = -1
         self.totalTime = 0
         self.minTotalTime = 0    
+        self.entropyInvoked = 0
 
     def __str__(self):
         return "Player " + str(self.playerNumber) + " "
@@ -77,9 +79,8 @@ class Player:
         
         # entropy, baby        
         if self.randomArr[self.numGamesPlayed] % (100 // self.entropy) == 0:
-            print(self.randomArr[self.numGamesPlayed])
-            self.currentChoice = self.randomArr[self.numGamesPlayed] % 2
-            print(self.currentChoice)
+            self.currentChoice = self.entropyArr[self.numGamesPlayed] % 2
+            self.entropyInvoked += 1
 
 
 def configureEntropy():
@@ -108,23 +109,20 @@ def placeStats(p1, p2):
     #so I want to be able to easily see which strats are best, so it's a bit hacky
     subprocess.run(["cp", "ipd_stats.txt", "ipd_stats.tmp"])
     df = pd.read_csv("ipd_stats.tmp", index_col="strat")
-    print(df)
+    
     df.loc[p1.strat, "num_games"] += p1.numGamesPlayed
     df.loc[p1.strat, "num_years"] += p1.totalTime
     df.loc[p1.strat, "min_years"] += p1.minTotalTime
+    df.loc[p1.strat, "num_entropy"] += p1.entropyInvoked
     df.loc[p2.strat, "num_games"] += p2.numGamesPlayed
     df.loc[p2.strat, "num_years"] += p2.totalTime
     df.loc[p2.strat, "min_years"] += p2.minTotalTime
-#    df.loc[df[p1.strat], "num_years"] += p1.totalTime
-    print(df)
+    df.loc[p2.strat, "num_entropy"] += p2.entropyInvoked
+    #print(df)
 
     df.to_csv("ipd_stats.txt")
 
     subprocess.run(["rm", "ipd_stats.tmp"])
-    
-    
-    
-    
 
 
 
