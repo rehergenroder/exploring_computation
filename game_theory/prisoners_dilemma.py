@@ -4,8 +4,8 @@
 
 import subprocess
 import os
-import sys
-try:
+import pandas as pd
+try: #pseudo RNG is for the birds
     import quantumrandom
 except ImportError:
     print("Quantunrandom not installed. Installing now.")
@@ -30,11 +30,14 @@ def main():
     print(str(p1) + " served " + str(p1.totalTime) + " years but had they perfect knowledge, they would have only served " + str(p1.minTotalTime) + " years. ")
     print(str(p2) + " served " + str(p1.totalTime) + " years but had they perfect knowledge, they would have only served " + str(p2.minTotalTime) + " years. ")
 
+    placeStats(p1,p2)
+
 class Player:
     def __init__(self, playerNumber, n, e):
         self.playerNumber = playerNumber
         self.strat = getStrategy("Player " + str(playerNumber))
         self.randomArr = quantumrandom.get_data(array_length = n)
+        print(self.randomArr)
         self.entropy = e
         self.numGamesPlayed = 0
         self.lastChoicePlayed = -1
@@ -74,7 +77,9 @@ class Player:
         
         # entropy, baby        
         if self.randomArr[self.numGamesPlayed] % (100 // self.entropy) == 0:
+            print(self.randomArr[self.numGamesPlayed])
             self.currentChoice = self.randomArr[self.numGamesPlayed] % 2
+            print(self.currentChoice)
 
 
 def configureEntropy():
@@ -98,6 +103,29 @@ def calculateGame(p1, p2, n):
     if(p1.currentChoice == 1 and p2.currentChoice == 1):
         p1.playGame(1, 2)
         p2.playGame(1, 2)
+
+def placeStats(p1, p2):
+    #so I want to be able to easily see which strats are best, so it's a bit hacky
+    subprocess.run(["cp", "ipd_stats.txt", "ipd_stats.tmp"])
+    df = pd.read_csv("ipd_stats.tmp", index_col="strat")
+    print(df)
+    df.loc[p1.strat, "num_games"] += p1.numGamesPlayed
+    df.loc[p1.strat, "num_years"] += p1.totalTime
+    df.loc[p1.strat, "min_years"] += p1.minTotalTime
+    df.loc[p2.strat, "num_games"] += p2.numGamesPlayed
+    df.loc[p2.strat, "num_years"] += p2.totalTime
+    df.loc[p2.strat, "min_years"] += p2.minTotalTime
+#    df.loc[df[p1.strat], "num_years"] += p1.totalTime
+    print(df)
+
+    df.to_csv("ipd_stats.txt")
+
+    subprocess.run(["rm", "ipd_stats.tmp"])
+    
+    
+    
+    
+
 
 
 def printIntroduction():
