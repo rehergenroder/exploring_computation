@@ -17,9 +17,10 @@ def main():
     clearScreen()
     printIntroduction()
     n = setIterationNumber()
+    e = configureEntropy()
 
-    p1 = Player(1, n)
-    p2 = Player(2, n)
+    p1 = Player(1, n, e)
+    p2 = Player(2, n, e)
 
     for i in range(0, n):
         p1.takeTurn()
@@ -30,10 +31,11 @@ def main():
     print(str(p2) + " served " + str(p1.totalTime) + " years but had they perfect knowledge, they would have only served " + str(p2.minTotalTime) + " years. ")
 
 class Player:
-    def __init__(self, playerNumber, n):
+    def __init__(self, playerNumber, n, e):
         self.playerNumber = playerNumber
         self.strat = getStrategy("Player " + str(playerNumber))
         self.randomArr = quantumrandom.get_data(array_length = n)
+        self.entropy = e
         self.numGamesPlayed = 0
         self.lastChoicePlayed = -1
         self.opponentLastChoicePlayed = -1
@@ -69,7 +71,17 @@ class Player:
                 self.currentChoice = 0;
             elif self.opponentLastChoicePlayed != self.lastChoicePlayed:
                 self.currentChoice = (self.lastChoicePlayed + 1) % 2
-                
+        
+        # entropy, baby        
+        if self.randomArr[self.numGamesPlayed] % (100 // self.entropy) == 0:
+            self.currentChoice = self.randomArr[self.numGamesPlayed] % 2
+
+
+def configureEntropy():
+    print("Please enter the probability that a player will play randomly rather than their chosen strat (1-100)")
+    choice = validateInput()
+    return choice
+
 
 def calculateGame(p1, p2, n):
 # 2x2 matrix
