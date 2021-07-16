@@ -8,5 +8,3 @@ game_theory/
             --An iterative prisoners dilemma with several strategies
             --basic and ncurses tui
             --future ideals: more strategies, gui, stats
-    prisoners_dilemma.py
-        --same as ipd_basic.py

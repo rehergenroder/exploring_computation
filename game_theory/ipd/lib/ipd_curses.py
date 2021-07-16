@@ -1,6 +1,7 @@
 import curses
 import lib.logic.runState as rs
 import lib.logic.player as pl
+import lib.logic.prompts as pmt
 
 def main():
     curses.wrapper(mainLoop)
@@ -61,16 +62,12 @@ def printCenteredText(stdscr, text):
 
 
 def printInstructions(stdscr):
-    instructions = ["You have been arrested for a crime, as has your partner",
-                    "You're both being interrogated.",
-                    "You can either stay silent and try to cooperate with your partner, or defect and betray them to the detectives."]
-    
+    instructions = pmt.getInstructions() 
     printCenteredText(stdscr, instructions)
     add_any_key(stdscr)
 
 
 def echoIntInput(stdscr, x, y, min_in, max_in):
-
     curses.echo()
     curses.curs_set(1)
     stdscr.refresh()
@@ -92,10 +89,7 @@ def setEntropy(stdscr):
     inputValid = False
 
     while(not inputValid):
-        text = ["In order to normalize results, we are going to need to introduce a source of entropy.",
-                "It's easiest to calculate this with a whole number percentage.",
-                "Please enter a positive integer (1-100): "]
-    
+        text = pmt.getEntropyText()   
         printCenteredText(stdscr, text)
 
         in_x = w // 2 - 1
@@ -111,18 +105,13 @@ def setMaxGames(stdscr):
     inputValid = False
 
     while(not inputValid):
-        text = ["There are optimal strategies when the number of games is known (namely, always defect.)",
-                "This is boring.",
-                "However, if neither player has this information beforehand-- various strategies open up.",
-                "What is the maximum number of games you want to play?",
-                "Please enter a positive integer (1-512): "]
-
+        text = pmt.getMaxGamesText()
         printCenteredText(stdscr, text)
 
         in_x = w // 2 - 1
         in_y = h //2 + len(text)
 
-        inputValid, n = echoIntInput(stdscr, in_x, in_y, 0, 512)
+        inputValid, n = echoIntInput(stdscr, in_x, in_y, 0, 256)
 
     return n
 
@@ -223,10 +212,10 @@ def mainLoop(stdscr):
             else:
                 curr_row_idx += 1
         elif key == curses.KEY_ENTER or key in [10, 13]:
-            stdscr.addstr(0,0, "You pressed {}".format(main_menu[curr_row_idx]))
             if curr_row_idx == 0:
                 playIPD(stdscr)
             elif curr_row_idx == 1:
+                printCenteredText(stdscr, ["Stats is still under construction.", "=("])
                 add_any_key(stdscr)            
             elif curr_row_idx == 2:
                 quitProgram()
