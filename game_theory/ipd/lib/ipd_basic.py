@@ -108,7 +108,7 @@ def calculateGame(p1, p2, n):
 
 def placeStats(p1, p2):
     #so I want to be able to easily see which strats are best, so it's a bit hacky
-    subprocess.run(["cp", "ipd_stats.txt", "ipd_stats.tmp"])
+    subprocess.run(["cp", "stats/strat.txt", "ipd_stats.tmp"])
     df = pd.read_csv("ipd_stats.tmp", index_col="strat")
     
     df.loc[p1.strat, "num_games"] += p1.numGamesPlayed
@@ -121,7 +121,7 @@ def placeStats(p1, p2):
     df.loc[p2.strat, "num_entropy"] += p2.entropyInvoked
     #print(df)
 
-    df.to_csv("ipd_stats.txt")
+    df.to_csv("stats/strat.txt")
 
     subprocess.run(["rm", "ipd_stats.tmp"])
 
@@ -164,5 +164,5 @@ def quit():
     print("Bye bae")
     exit()
 
-if __name__ == "__main__":
-    main()
+#if __name__ == "__main__":
+#    main()
