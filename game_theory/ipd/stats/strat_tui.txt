@@ -1,0 +1,6 @@
+strat,num_games,num_years,min_years,num_entropy
+Random,0,0,0,0
+Tit for Tat,91,125,66,6
+Tit for Two Tat,0,0,0,0
+Pavlov,95,126,64,5
+GRIM,0,0,0,0

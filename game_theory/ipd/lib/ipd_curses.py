@@ -1,4 +1,7 @@
+import subprocess
 import curses
+import pandas as pd
+
 import lib.logic.runState as rs
 import lib.logic.player as pl
 import lib.logic.prompts as pmt
@@ -120,7 +123,7 @@ def pickStrategy(stdscr, player):
     h, w = stdscr.getmaxyx()
     
     curr_row_idx = 0
-    strategies = ["Random", "Tit for Tat", "Pavlov", "Exit Program"]
+    strategies = ["Random", "Tit for Tat", "Tit for Two Tat", "Pavlov", "GRIM", "Exit Program"]
     text = "Please pick a strategy for player " + str(player) + ":"
 
     while(1):
@@ -144,7 +147,7 @@ def pickStrategy(stdscr, player):
                 curr_row_idx += 1
         elif key == curses.KEY_ENTER or key in [10,13]:
             stdscr.clear()
-            if curr_row_idx == 3:
+            if curr_row_idx == 5:
                 quitProgram()
             else:
                 return strategies[curr_row_idx]
@@ -170,6 +173,24 @@ def printFinish(stdscr, currRS, p1, p2):
     printCenteredText(stdscr, text)
     add_any_key(stdscr)
 
+
+def updateStats(p1, p2, n):
+    subprocess.run(["cp", "stats/strat_tui.txt", "ipd_stats.tmp"])
+    df = pd.read_csv("ipd_stats.tmp", index_col="strat")
+
+    df.loc[p1.strat, "num_games"] += n
+    df.loc[p1.strat, "num_years"] += p1.years
+    df.loc[p1.strat, "min_years"] += p1.minYears
+    df.loc[p1.strat, "num_entropy"] += p1.entropyInvoked
+    df.loc[p2.strat, "num_games"] += n
+    df.loc[p2.strat, "num_years"] += p2.years
+    df.loc[p2.strat, "min_years"] += p2.minYears
+    df.loc[p2.strat, "num_entropy"] += p2.entropyInvoked
+
+    df.to_csv("stats/strat_tui.txt")
+    subprocess.run(["rm", "ipd_stats.tmp"])
+
+
 def playIPD(stdscr):
     printInstructions(stdscr)
     e = setEntropy(stdscr)
@@ -182,8 +203,24 @@ def playIPD(stdscr):
     printRS(stdscr, currRS, p1, p2)    
 
     runGames(currRS, p1, p2) 
-
+    updateStats(p1, p2, currRS.gameLength)
+    
     printFinish(stdscr, currRS, p1, p2)
+
+def printStats(stdscr):
+    stdscr.clear()
+    h,w = stdscr.getmaxyx()
+
+    subprocess.run(["cp", "stats/strat_tui.txt", "ipd_stats.tmp"])
+    df = pd.read_csv("ipd_stats.tmp", index_col="strat")
+
+    text = str(df).split("\n")
+    printCenteredText(stdscr, text)
+
+    df.to_csv("stats/strat_tui.txt")
+    subprocess.run(["rm", "ipd_stats.tmp"])
+    add_any_key(stdscr)
+
 
 def mainLoop(stdscr):
     curses.curs_set(0)
@@ -215,7 +252,8 @@ def mainLoop(stdscr):
             if curr_row_idx == 0:
                 playIPD(stdscr)
             elif curr_row_idx == 1:
-                printCenteredText(stdscr, ["Stats is still under construction.", "=("])
-                add_any_key(stdscr)            
+#                printCenteredText(stdscr, ["Stats is still under construction.", "=("])
+#                add_any_key(stdscr)            
+                printStats(stdscr)
             elif curr_row_idx == 2:
                 quitProgram()

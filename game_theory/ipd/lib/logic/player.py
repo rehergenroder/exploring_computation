@@ -26,6 +26,20 @@ class player:
                 self.choice = 1
             else:
                 self.choice = 0
+        ### Tit for Two Tat###
+        elif self.strat == "Tit for Two Tat":
+            if len(opponentChoices) < 2:
+                self.choice = 0;
+            elif opponentChoices[-1] == 1 and opponentChoices[-2] == 1:
+                self.choice = 1
+            else:
+                self.choice = 0
+        ### GRIM ###
+        elif self.strat == "GRIM":
+            if 1 in opponentChoices:
+                self.choice = 1
+            else:
+                self.choice = 0
         ### PAVLOV ###
         elif self.strat == "Pavlov":
             if len(opponentChoices) == 0:

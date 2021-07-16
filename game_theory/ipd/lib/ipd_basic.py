@@ -53,7 +53,9 @@ def placeStats(p1, p2, n):
     df.loc[p2.strat, "num_years"] += p2.years
     df.loc[p2.strat, "min_years"] += p2.minYears
     df.loc[p2.strat, "num_entropy"] += p2.entropyInvoked
-    #print(df)
+    
+    text = str(df).split("\n")
+    print(text)
 
     df.to_csv("stats/strat.txt")
 
