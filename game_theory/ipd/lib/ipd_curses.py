@@ -123,7 +123,7 @@ def pickStrategy(stdscr, player):
     h, w = stdscr.getmaxyx()
     
     curr_row_idx = 0
-    strategies = ["Random", "Tit for Tat", "Tit for Two Tat", "Pavlov", "GRIM", "Exit Program"]
+    strategies = ["Random", "Tit for Tat", "Tit for Two Tat", "Pavlov", "GRIM", "Tribal Equilibrium", "Exit Program"]
     text = "Please pick a strategy for player " + str(player) + ":"
 
     while(1):
@@ -147,7 +147,7 @@ def pickStrategy(stdscr, player):
                 curr_row_idx += 1
         elif key == curses.KEY_ENTER or key in [10,13]:
             stdscr.clear()
-            if curr_row_idx == 5:
+            if curr_row_idx == 6:
                 quitProgram()
             else:
                 return strategies[curr_row_idx]
@@ -181,11 +181,14 @@ def updateStats(p1, p2, n):
     df.loc[p1.strat, "num_games"] += n
     df.loc[p1.strat, "num_years"] += p1.years
     df.loc[p1.strat, "min_years"] += p1.minYears
+    df.loc[p1.strat, "efficiency"] = df.loc[p1.strat, "min_years"] / df.loc[p1.strat, "num_years"]
     df.loc[p1.strat, "num_entropy"] += p1.entropyInvoked
     df.loc[p2.strat, "num_games"] += n
     df.loc[p2.strat, "num_years"] += p2.years
     df.loc[p2.strat, "min_years"] += p2.minYears
     df.loc[p2.strat, "num_entropy"] += p2.entropyInvoked
+    df.loc[p2.strat, "efficiency"] = df.loc[p2.strat, "min_years"] / df.loc[p2.strat, "num_years"]
+
 
     df.to_csv("stats/strat_tui.txt")
     subprocess.run(["rm", "ipd_stats.tmp"])

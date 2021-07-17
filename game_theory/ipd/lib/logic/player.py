@@ -11,6 +11,8 @@ class player:
         self.minYears = 0
         self.entropyInvoked = 0
 
+        self.tribalThreshold = 0.8
+
     def __str__(self):
         return "Player " + str(self.id) + " "
 
@@ -46,6 +48,18 @@ class player:
                 self.choice = 0
             elif opponentChoices[-1] != playerChoices[-1]:
                 self.choice = (self.choice + 1) % 2
+        ### TRIBAL EQUILIBRIUM ###
+        elif self.strat == "Tribal Equilibrium":
+            if len(opponentChoices) == 0:
+                self.choice = 0
+            else:
+                opponentRatio = opponentChoices.count(0) / len(opponentChoices)
+                if opponentRatio < self.tribalThreshold:
+                    self.choice = 1
+                else:
+                    self.choice = 0
+
+
 
         ### ENTROPY ###
         if self.randArr[numPlayed] % ( 100 // entropy) == 0:

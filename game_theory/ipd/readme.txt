@@ -16,8 +16,10 @@ Current strategies:
     -tit for two tat
     -pavlov
     -GRIM
+    -Naive Tribal EQ
 
 Future Updates:
+    -teq modification
     -gui
     -more strats
     -statistical analysis slash visualizations
@@ -25,6 +27,8 @@ Future Updates:
         --having a way to pit one strat against all others would be good
 
 Updates:
+    7/17/21
+        --naive tribal eq
     7/16/21
         --basic stats on tui working
         --more work on ncurses tui

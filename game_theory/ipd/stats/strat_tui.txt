@@ -1,6 +1,7 @@
-strat,num_games,num_years,min_years,num_entropy
-Random,0,0,0,0
-Tit for Tat,91,125,66,6
-Tit for Two Tat,0,0,0,0
-Pavlov,95,126,64,5
-GRIM,0,0,0,0
+strat,num_games,num_years,min_years,efficiency,num_entropy
+Random,470,846,616,0.7281323877068558,14
+Tit for Tat,253,340,172,0.5058823529411764,12
+Tit for Two Tat,0,0,0,0.0,0
+Pavlov,577,707,268,0.3790664780763791,37
+Tribal Equilibrium,958,1168,550,0.4708904109589041,45
+GRIM,0,0,0,0.0,0
